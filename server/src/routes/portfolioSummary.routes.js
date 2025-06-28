@@ -1,9 +1,10 @@
 const express = require("express");
+
+const { getPortfolioSummary }  = require("../Portfolio/models/portfolio");
+
+
 const router  = express.Router();
 
-router.get("/", async (req, res) => {
-  // TODO: implement filters + data fetch
-  res.json({ message: "Portfolio summary placeholder" });
-});
+router.get("/summary", getPortfolioSummary);
 
 module.exports = router;
