@@ -4,7 +4,6 @@ const {
   login,
   logout,
   logoutFromAllDevices,
-  getLoginAudit,
   register,
 } = require("../Auth/controllers/authController");
 
@@ -14,6 +13,5 @@ router.post("/register", register);
 router.post("/login", login);
 router.post("/logout", authenticateToken, logout);
 router.post("/logout/all", authenticateToken, logoutFromAllDevices);
-router.get("/audit/login", authenticateToken, getLoginAudit);
 
 module.exports = router;

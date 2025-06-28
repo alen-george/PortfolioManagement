@@ -80,7 +80,56 @@ const updateUserProfile = async (req, res) => {
   }
 };
 
+// GET /audit/login
+const getLoginAudit = async (req, res) => {
+  try {
+    const { page = 1, limit = 10, userId } = req.query;
+    const offset = (page - 1) * limit;
+
+    const whereClause = {};
+    if (userId) {
+      whereClause.userId = parseInt(userId);
+    }
+
+    const [auditLogs, totalCount] = await Promise.all([
+      prisma.auditAction.findMany({
+        where: whereClause,
+        include: {
+          user: {
+            select: {
+              id: true,
+              firstName: true,
+              lastName: true,
+              email: true,
+            },
+          },
+        },
+        orderBy: {
+          createdAt: "desc",
+        },
+        skip: offset,
+        take: parseInt(limit),
+      }),
+      prisma.auditAction.count({ where: whereClause }),
+    ]);
+
+    res.json({
+      data: auditLogs,
+      pagination: {
+        page: parseInt(page),
+        limit: parseInt(limit),
+        total: totalCount,
+        totalPages: Math.ceil(totalCount / limit),
+      },
+    });
+  } catch (error) {
+    console.error("Get audit logs error:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
 module.exports = {
   getUserProfile,
   updateUserProfile,
+  getLoginAudit,
 };
