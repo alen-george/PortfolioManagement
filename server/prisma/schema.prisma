@@ -99,5 +99,6 @@ model AuditAction {
   user      UserDetail? @relation(fields: [userId], references: [id], onDelete: SetNull)
   userId    Int?
   action    String
+  metadata Json?
   createdAt DateTime   @default(now())
 }
