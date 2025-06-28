@@ -3,10 +3,17 @@
     "version": "1.0.0",
     "private": true,
     "scripts": {
-      "client": "cd client && npm run dev",
-      "server": "cd server && npm run dev",
-      "client:install": "cd client && npm install",
-      "server:install": "cd server && npm install"
+        "client": "cd client && npm run dev",
+        "server": "cd server && npm run dev",
+        "client:install": "cd client && npm install",
+        "server:install": "cd server && npm install"
     },
-    "dependencies": {}
-  }
+    "dependencies": {
+        "@emotion/react": "^11.14.0",
+        "@emotion/styled": "^11.14.1",
+        "@mui/material": "^7.1.2",
+        "@mui/x-data-grid": "^8.6.0",
+        "react": "^19.1.0",
+        "react-dom": "^19.1.0"
+    }
+}
