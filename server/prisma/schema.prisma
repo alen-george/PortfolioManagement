@@ -30,7 +30,7 @@ model UserDetail {
   email        String           @unique
   createdAt    DateTime         @default(now())
 
-  account      AccountDetail?
+  accounts     AccountDetail[]
   logins       UserLoginDetail[]
   auditActions AuditAction[]
 }
