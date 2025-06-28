@@ -69,7 +69,6 @@ model PortfolioDetail {
   name         String
   createdAt    DateTime         @default(now())
   assets       AssetDetail[]
-  orders       OrderDetail[]
 }
 
 model SecurityDetail {
@@ -77,7 +76,6 @@ model SecurityDetail {
   name      String         @unique
   symbol    String         @unique
   assets    AssetDetail[]
-  orders    OrderDetail[]
 }
 
 model AssetDetail {
@@ -92,18 +90,12 @@ model AssetDetail {
 
 model OrderDetail {
   id              Int             @id @default(autoincrement())
-  portfolio       PortfolioDetail @relation(fields: [portfolioId], references: [id], onDelete: Cascade)
-  portfolioId     Int
-  security        SecurityDetail  @relation(fields: [securityId], references: [id], onDelete: Cascade)
-  securityId      Int
-  orderRefNo      String          @unique
+  orderStatus      String          @unique
   transactionType TransactionType
-  quantity        Int
   orderValue      Decimal         @db.Decimal(12,2)
-  status          OrderStatus
-  createdAt       DateTime        @default(now())
-  executedAt      DateTime?
-  completedAt     DateTime?
+  createdON       DateTime        @default(now())
+  createdBy       DateTime        @default(now())
+  completedBy     DateTime?
 }
 
 model AuditAction {
