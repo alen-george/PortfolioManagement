@@ -21,6 +21,8 @@ const logger = winston.createLogger({
 });
 
 // ── feature routes ──────────────────
+const authRoutes        = require("./routes/auth.routes");
+const userRoutes        = require("./routes/user.routes");
 const portfolioRoutes   = require("./routes/portfolioSummary.routes");
 const orderRoutes       = require("./routes/orderEntry.routes");
 const transactionRoutes = require("./routes/transactionHistory.routes");
@@ -29,6 +31,8 @@ const transactionRoutes = require("./routes/transactionHistory.routes");
 app.get("/health", (_, res) => res.json({ status: "UP" }));
 
 // mount domain modules
+app.use("/api/auth",         authRoutes);
+app.use("/api/user",         userRoutes);
 app.use("/api/portfolio",    portfolioRoutes);
 app.use("/api/order",        orderRoutes);
 app.use("/api/transactions", transactionRoutes);

@@ -1,6 +1,7 @@
-import prisma from "../lib/prisma.js";
-import winston from "winston";
+const { PrismaClient } = require("@prisma/client");
+const winston = require("winston");
 
+const prisma = new PrismaClient();
 const logger = winston.createLogger({
   level: "info",
   transports: [new winston.transports.Console()],
@@ -13,7 +14,7 @@ const logger = winston.createLogger({
  * @param {string} opts.action            – e.g. LOGIN_SUCCESS, ORDER UPDATE
  * @param {object} [opts.metadata]        – optional JSON payload (ip, filters, etc.)
  */
-export async function logAction({ userId = null, action, metadata = {} }) {
+async function logAction({ userId = null, action, metadata = {} }) {
   try {
     await prisma.auditAction.create({
       data: { userId, action, metadata },
@@ -32,7 +33,7 @@ export async function logAction({ userId = null, action, metadata = {} }) {
  * Convenience helper dedicated to login attempts.
  * Internally calls logAction so everything still lives in AUDIT_ACTION.
  */
-export async function logUserLogin({
+async function logUserLogin({
   userId = null,
   ip,
   userAgent,
@@ -44,3 +45,20 @@ export async function logUserLogin({
     metadata: { ip, userAgent },
   });
 }
+
+/**
+ * Convenience helper dedicated to logout attempts.
+ */
+async function logUserLogout({ userId = null, ip, userAgent }) {
+  await logAction({
+    userId,
+    action: "LOGOUT_SUCCESS",
+    metadata: { ip, userAgent },
+  });
+}
+
+module.exports = {
+  logAction,
+  logUserLogin,
+  logUserLogout,
+};
