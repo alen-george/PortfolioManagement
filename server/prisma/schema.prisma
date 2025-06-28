@@ -28,19 +28,31 @@ model UserDetail {
   firstName    String
   lastName     String
   email        String           @unique
+  password     String
   createdAt    DateTime         @default(now())
 
   accounts     AccountDetail[]
-  logins       UserLoginDetail[]
+  sessions     Session[]
   auditActions AuditAction[]
 }
 
-model UserLoginDetail {
+model Session {
   id        Int        @id @default(autoincrement())
   user      UserDetail @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId    Int
-  loginAt   DateTime   @default(now())
+  sessionId String     @unique
+  isValid   Boolean    @default(true)
+  createdAt DateTime   @default(now())
+  expiresAt DateTime
+  invalidatedAt DateTime?
 }
+
+// model UserLoginDetail {
+//  id        Int        @id @default(autoincrement())
+//  user      UserDetail @relation(fields: [userId], references: [id], onDelete: Cascade)
+//  userId    Int
+//  loginAt   DateTime   @default(now())
+// }
 
 model AccountDetail {
   id          Int               @id @default(autoincrement())
