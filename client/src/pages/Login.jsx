@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Box,
   Paper,
@@ -18,10 +18,12 @@ import {
   Lock
 } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../hooks/useAuth';
 import axios from 'axios';
 
 const Login = () => {
   const navigate = useNavigate();
+  const { login, isAuthenticated } = useAuth();
   const [formData, setFormData] = useState({
     email: '',
     password: ''
@@ -30,6 +32,13 @@ const Login = () => {
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
   const [loginError, setLoginError] = useState('');
+
+  // Redirect if already authenticated
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate('/');
+    }
+  }, [isAuthenticated, navigate]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -84,21 +93,8 @@ const Login = () => {
       });
       
       // Handle successful login
-      if (response.data) {
-        // Store token or user data in localStorage/sessionStorage
-        localStorage.setItem('isAuthenticated', 'true');
-        localStorage.setItem('userEmail', formData.email);
-        
-        // Store the token if it's returned in the response
-        if (response.data.token) {
-          localStorage.setItem('authToken', response.data.token);
-        }
-        
-        // Store user data if returned
-        if (response.data.user) {
-          localStorage.setItem('userData', JSON.stringify(response.data.user));
-        }
-        
+      if (response.data && response.data.token) {
+        login(response.data.token);
         // Redirect to dashboard or home page
         navigate('/');
       }
