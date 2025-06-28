@@ -14,7 +14,7 @@ RUN npm ci
 
 # ── Prisma client build ──────────────
 COPY prisma ./prisma
-# RUN npx prisma generate
+RUN npx prisma generate
 
 # ── copy source ──────────────────────
 COPY . .
