@@ -1,0 +1,103 @@
+// ---------- Datasource & generator ----------
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+// ---------- Enums ----------
+enum TransactionType {
+  BUY
+  SELL
+}
+
+enum OrderStatus {
+  SUBMITTED
+  CANCELLED
+  EXECUTED
+  COMPLETED
+  FAILED
+}
+
+// ---------- Base Models ----------
+model UserDetail {
+  id           Int              @id @default(autoincrement())
+  firstName    String
+  lastName     String
+  email        String           @unique
+  createdAt    DateTime         @default(now())
+
+  account      AccountDetail?
+  logins       UserLoginDetail[]
+  auditActions AuditAction[]
+}
+
+model UserLoginDetail {
+  id        Int        @id @default(autoincrement())
+  user      UserDetail @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    Int
+  loginAt   DateTime   @default(now())
+}
+
+model AccountDetail {
+  id          Int               @id @default(autoincrement())
+  user        UserDetail        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId      Int
+  balance     Decimal           @default(10000.00) @db.Decimal(12,2)
+  portfolios  PortfolioDetail[]
+}
+
+model PortfolioDetail {
+  id           Int              @id @default(autoincrement())
+  account      AccountDetail    @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  accountId    Int
+  name         String
+  createdAt    DateTime         @default(now())
+  assets       AssetDetail[]
+  orders       OrderDetail[]
+}
+
+model SecurityDetail {
+  id        Int            @id @default(autoincrement())
+  name      String         @unique
+  symbol    String         @unique
+  assets    AssetDetail[]
+  orders    OrderDetail[]
+}
+
+model AssetDetail {
+  id            Int             @id @default(autoincrement())
+  portfolio     PortfolioDetail @relation(fields: [portfolioId], references: [id], onDelete: Cascade)
+  portfolioId   Int
+  security      SecurityDetail  @relation(fields: [securityId], references: [id], onDelete: Cascade)
+  securityId    Int
+  quantity      Int
+  updatedAt     DateTime        @updatedAt
+}
+
+model OrderDetail {
+  id              Int             @id @default(autoincrement())
+  portfolio       PortfolioDetail @relation(fields: [portfolioId], references: [id], onDelete: Cascade)
+  portfolioId     Int
+  security        SecurityDetail  @relation(fields: [securityId], references: [id], onDelete: Cascade)
+  securityId      Int
+  orderRefNo      String          @unique
+  transactionType TransactionType
+  quantity        Int
+  orderValue      Decimal         @db.Decimal(12,2)
+  status          OrderStatus
+  createdAt       DateTime        @default(now())
+  executedAt      DateTime?
+  completedAt     DateTime?
+}
+
+model AuditAction {
+  id        Int        @id @default(autoincrement())
+  user      UserDetail? @relation(fields: [userId], references: [id], onDelete: SetNull)
+  userId    Int?
+  action    String
+  createdAt DateTime   @default(now())
+}
