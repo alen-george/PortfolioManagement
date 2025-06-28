@@ -1,4 +1,6 @@
 import { lazy } from 'react';
+import AuthGuard from '../components/AuthGuard';
+import PublicRoute from '../components/PublicRoute';
 
 const PortfolioPerformance = lazy(() => import('../Portfolio/pages/PortfolioPerformance'));
 const LandingPage = lazy(() => import('../pages/LandingPage'));
@@ -7,17 +9,17 @@ const Login = lazy(() => import('../pages/Login'));
 export const routes = [
   {
     path: '/login',
-    element: <Login />,
+    element: <PublicRoute><Login /></PublicRoute>,
     layout: null
   },
   {
     path: '/',
-    element: <LandingPage />,
+    element: <AuthGuard><LandingPage /></AuthGuard>,
     layout: 'main'
   },
   {
     path: '/portfolio/performance',
-    element: <PortfolioPerformance />,
+    element: <AuthGuard><PortfolioPerformance /></AuthGuard>,
     layout: 'main'
   }
 ];

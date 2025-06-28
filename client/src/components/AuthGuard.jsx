@@ -1,22 +1,32 @@
-import React, { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Box, CircularProgress } from '@mui/material';
+import React from 'react';
+import { useAuth } from '../hooks/useAuth';
 
 const AuthGuard = ({ children }) => {
-  const navigate = useNavigate();
+  const { isAuthenticated, isLoading, requireAuth } = useAuth();
 
-  useEffect(() => {
-    const authToken = localStorage.getItem('authToken');
-    
-    if (!authToken) {
-      navigate('/login');
-    }
-  }, [navigate]);
+  // Check authentication on mount
+  React.useEffect(() => {
+    requireAuth();
+  }, [requireAuth]);
 
-  // Check if user is authenticated
-  const authToken = localStorage.getItem('authToken');
-  
-  if (!authToken) {
-    return null; // Don't render anything while redirecting
+  // Show loading spinner while checking authentication
+  if (isLoading) {
+    return (
+      <Box
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        minHeight="100vh"
+      >
+        <CircularProgress />
+      </Box>
+    );
+  }
+
+  // Don't render anything if not authenticated (will redirect to login)
+  if (!isAuthenticated) {
+    return null;
   }
 
   return children;
