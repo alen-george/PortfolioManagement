@@ -13,23 +13,23 @@ services:
     volumes:
       - db-data:/var/lib/postgresql/data
 
-  # backend:
-  #   build: ./server
-  #   restart: always
-  #   env_file:
-  #     - ./server/.env
-  #   depends_on:
-  #     - db
-  #   ports:
-  #     - "5000:5000"
+  backend:
+    build: ./server
+    restart: always
+    env_file:
+      - ./server/.env
+    depends_on:
+      - db
+    ports:
+      - "5001:5000"
 
-  # frontend:
-  #   build: ./client
-  #   restart: always
-  #   depends_on:
-  #     - backend
-  #   ports:
-  #     - "3000:80"
+  frontend:
+    build: ./client
+    restart: always
+    depends_on:
+      - backend
+    ports:
+      - "3000:80"
 
 volumes:
   db-data:
