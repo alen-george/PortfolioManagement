@@ -1,6 +1,6 @@
 const { PrismaClient } = require("@prisma/client");
 const { hashPassword } = require("../../utils/auth");
-
+const { logAction } = require("../../services/auditService");
 const prisma = new PrismaClient();
 
 // GET /user/profile

@@ -6,7 +6,7 @@ const {
   generateSessionId,
   getTokenExpirationTime,
 } = require("../../utils/auth");
-const { logUserLogin, logUserLogout } = require("../../services/auditService");
+const { logAction, logUserLogin, logUserLogout } = require("../../services/auditService");
 
 const prisma = new PrismaClient();
 
